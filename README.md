@@ -113,7 +113,7 @@ Dive deeper into the architectural decisions:
 ## 👤 Author & License
 
 👤 **Your Name**
-* GitHub: [@yourusername](https://github.com/yourusername) 
+* GitHub: [@nithinmalla]([https://github.com/yourusername](https://github.com/nithinmalla)) 
 
 📝 **License**
 This project is [MIT](https://choosealicense.com/licenses/mit/) licensed.
