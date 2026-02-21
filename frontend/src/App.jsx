@@ -4,6 +4,8 @@ import { BookOpen, LayoutDashboard, Users, FileText } from 'lucide-react';
 import Dashboard from './components/Dashboard';
 import ExamsList from './components/ExamsList';
 import StudentsList from './components/StudentsList';
+import TeachersList from './components/TeachersList';
+import SubjectsList from './components/SubjectsList';
 
 function App() {
   return (
@@ -23,6 +25,12 @@ function App() {
           <Link to="/students" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
             <Users size={18} /> Students
           </Link>
+          <Link to="/teachers" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <Users size={18} /> Teachers
+          </Link>
+          <Link to="/subjects" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <BookOpen size={18} /> Subjects
+          </Link>
         </div>
       </nav>
       <div className="app-container">
@@ -30,6 +38,8 @@ function App() {
           <Route path="/" element={<Dashboard />} />
           <Route path="/exams" element={<ExamsList />} />
           <Route path="/students" element={<StudentsList />} />
+          <Route path="/teachers" element={<TeachersList />} />
+          <Route path="/subjects" element={<SubjectsList />} />
         </Routes>
       </div>
     </Router>

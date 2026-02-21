@@ -121,19 +121,104 @@ app.delete('/api/students/:id', async (req, res) => {
   }
 });
 
-// --- REFERENCE DATA ROUTES (for dropdowns) ---
+// --- TEACHERS ROUTES ---
+app.get('/api/teachers', async (req, res) => {
+  try {
+    const [teachers] = await db.query('SELECT * FROM teacher ORDER BY first_name');
+    res.json(teachers);
+  } catch (err) { res.status(500).json({ error: 'Database fetch failed' }); }
+});
+
+app.post('/api/teachers', async (req, res) => {
+  const { first_name, last_name, email, phone, department, hire_date } = req.body;
+  try {
+    const [result] = await db.query(
+      `INSERT INTO teacher (first_name, last_name, email, phone, department, hire_date) 
+       VALUES (?, ?, ?, ?, ?, ?)`,
+      [first_name, last_name, email, phone, department, hire_date]
+    );
+    res.json({ message: 'Teacher added', teacher_id: result.insertId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database query failed' });
+  }
+});
+
+app.put('/api/teachers/:id', async (req, res) => {
+  const { id } = req.params;
+  const { first_name, last_name, email, phone, department, hire_date } = req.body;
+  try {
+    await db.query(
+      `UPDATE teacher SET first_name=?, last_name=?, email=?, phone=?, department=?, hire_date=? 
+       WHERE teacher_id=?`,
+      [first_name, last_name, email, phone, department, hire_date, id]
+    );
+    res.json({ message: 'Teacher updated' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database query failed' });
+  }
+});
+
+app.delete('/api/teachers/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.query('DELETE FROM teacher WHERE teacher_id=?', [id]);
+    res.json({ message: 'Teacher deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database query failed' });
+  }
+});
+
+// --- SUBJECTS ROUTES ---
 app.get('/api/subjects', async (req, res) => {
   try {
-    const [subjects] = await db.query('SELECT subject_id, subject_name FROM subject ORDER BY subject_name');
+    const [subjects] = await db.query('SELECT * FROM subject ORDER BY subject_name');
     res.json(subjects);
   } catch (err) { res.status(500).json({ error: 'Database fetch failed' }); }
 });
 
-app.get('/api/teachers', async (req, res) => {
+app.post('/api/subjects', async (req, res) => {
+  const { subject_code, subject_name, description, credits } = req.body;
   try {
-    const [teachers] = await db.query('SELECT teacher_id, first_name, last_name FROM teacher ORDER BY first_name');
-    res.json(teachers);
-  } catch (err) { res.status(500).json({ error: 'Database fetch failed' }); }
+    const [result] = await db.query(
+      `INSERT INTO subject (subject_code, subject_name, description, credits) 
+       VALUES (?, ?, ?, ?)`,
+      [subject_code, subject_name, description, credits || 3]
+    );
+    res.json({ message: 'Subject added', subject_id: result.insertId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database query failed' });
+  }
+});
+
+app.put('/api/subjects/:id', async (req, res) => {
+  const { id } = req.params;
+  const { subject_code, subject_name, description, credits } = req.body;
+  try {
+    await db.query(
+      `UPDATE subject SET subject_code=?, subject_name=?, description=?, credits=? 
+       WHERE subject_id=?`,
+      [subject_code, subject_name, description, credits, id]
+    );
+    res.json({ message: 'Subject updated' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database query failed' });
+  }
+});
+
+app.delete('/api/subjects/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    await db.query('DELETE FROM subject WHERE subject_id=?', [id]);
+    res.json({ message: 'Subject deleted' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database query failed' });
+  }
 });
 
 
