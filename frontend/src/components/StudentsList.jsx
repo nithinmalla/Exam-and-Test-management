@@ -20,7 +20,7 @@ const StudentsList = () => {
 
     const fetchStudents = () => {
         setLoading(true);
-        axios.get('http://localhost:5000/api/students')
+        axios.get('http://localhost:5001/api/students')
             .then(res => {
                 setStudents(res.data);
                 setLoading(false);
@@ -68,8 +68,8 @@ const StudentsList = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const endpoint = editingStudent
-            ? `http://localhost:5000/api/students/${editingStudent.student_id}`
-            : 'http://localhost:5000/api/students';
+            ? `http://localhost:5001/api/students/${editingStudent.student_id}`
+            : 'http://localhost:5001/api/students';
         const method = editingStudent ? 'put' : 'post';
 
         axios[method](endpoint, formData)
@@ -82,7 +82,7 @@ const StudentsList = () => {
 
     const handleDelete = (id) => {
         if (window.confirm('Are you sure you want to delete this student?')) {
-            axios.delete(`http://localhost:5000/api/students/${id}`)
+            axios.delete(`http://localhost:5001/api/students/${id}`)
                 .then(res => fetchStudents())
                 .catch(err => alert('Error deleting student'));
         }

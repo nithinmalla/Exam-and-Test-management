@@ -1,19 +1,20 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
-  --primary: #6366f1;
-  /* Indigo */
-  --primary-hover: #4f46e5;
-  --bg-dark: #0f172a;
-  /* Slate 900 */
-  --surface-dark: rgba(30, 41, 59, 0.7);
-  /* Slate 800 with opacity */
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --border-color: rgba(255, 255, 255, 0.1);
+  --primary: #E85002;
+  --primary-hover: #F16001;
+  --bg-dark: #000000;
+  --surface-dark: #000000;
+  --text-main: #FFFFFF;
+  --text-muted: #FFFFFF;
+  --border-color: #E85002;
   --success: #10b981;
-  --danger: #ef4444;
+  --danger: #C10801;
   --warning: #f59e0b;
+}
+
+.bg-gradient-brand {
+  background: linear-gradient(135deg, #000000, #C10801, #F16001, #D9C3AB);
 }
 
 * {
@@ -26,8 +27,7 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-dark);
   color: var(--text-main);
-  background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15) 0%, transparent 40%),
-    radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
+  background-image: none;
   background-attachment: fixed;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -40,7 +40,7 @@ a {
 }
 
 a:hover {
-  text-shadow: 0 0 8px rgba(99, 102, 241, 0.5);
+  text-shadow: 0 0 8px rgba(232, 80, 2, 0.5);
 }
 
 .glass-panel {
@@ -63,7 +63,7 @@ a:hover {
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.4);
+  box-shadow: 0 4px 15px rgba(232, 80, 2, 0.4);
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -71,13 +71,13 @@ a:hover {
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.6);
+  box-shadow: 0 6px 20px rgba(232, 80, 2, 0.6);
 }
 
 .btn-secondary {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border: 1px solid var(--border-color);
+  background: #000000;
+  color: #FFFFFF;
+  border: 1px solid var(--primary);
   padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
@@ -89,7 +89,7 @@ a:hover {
 }
 
 .btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--primary);
 }
 
 .btn-danger {
@@ -110,8 +110,8 @@ a:hover {
 }
 
 .btn-icon {
-  background: rgba(255, 255, 255, 0.1);
-  border: none;
+  background: #000000;
+  border: 1px solid var(--primary);
   color: var(--text-main);
   border-radius: 8px;
   width: 36px;
@@ -137,7 +137,7 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 20px 40px;
-  background: rgba(15, 23, 42, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--border-color);
   position: sticky;
@@ -148,7 +148,7 @@ nav {
 .nav-brand {
   font-size: 1.5rem;
   font-weight: 800;
-  background: linear-gradient(to right, #6366f1, #a855f7);
+  background: linear-gradient(to right, #E85002, #D9C3AB);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -191,7 +191,7 @@ nav {
   font-weight: 700;
   margin-bottom: 10px;
   color: var(--primary);
-  background: linear-gradient(to bottom, #f8fafc, #94a3b8);
+  background: linear-gradient(to bottom, #FFFFFF, #E85002);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -245,7 +245,7 @@ th {
 }
 
 tr:hover {
-  background: rgba(255, 255, 255, 0.02);
+  background: #E85002;
 }
 
 .badge {
@@ -256,8 +256,8 @@ tr:hover {
 }
 
 .badge-scheduled {
-  background: rgba(99, 102, 241, 0.2);
-  color: #818cf8;
+  background: rgba(232, 80, 2, 0.2);
+  color: #E85002;
 }
 
 .badge-ongoing {
@@ -337,8 +337,8 @@ tr:hover {
 .form-control {
   width: 100%;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--border-color);
+  background: #000000;
+  border: 1px solid var(--primary);
   border-radius: 8px;
   color: var(--text-main);
   font-size: 1rem;
@@ -348,9 +348,9 @@ tr:hover {
 
 .form-control:focus {
   outline: none;
-  border-color: var(--primary);
-  background: rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  border-color: var(--text-main);
+  background: #000000;
+  box-shadow: 0 0 0 3px rgba(232, 80, 2, 0.5);
 }
 
 .modal-actions {

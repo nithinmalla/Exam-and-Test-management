@@ -142,6 +142,39 @@ CREATE TABLE result (
 );
 
 -- ==========================================
+-- 11. TEACHER_SUBJECT (Bridge Table)
+-- ==========================================
+CREATE TABLE teacher_subject (
+    teacher_id INT NOT NULL,
+    subject_id INT NOT NULL,
+    PRIMARY KEY (teacher_id, subject_id),
+    FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subject(subject_id) ON DELETE CASCADE
+);
+
+-- ==========================================
+-- 12. TEACHER_STUDENT (Bridge Table)
+-- ==========================================
+CREATE TABLE teacher_student (
+    teacher_id INT NOT NULL,
+    student_id INT NOT NULL,
+    PRIMARY KEY (teacher_id, student_id),
+    FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id) ON DELETE CASCADE,
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE
+);
+
+-- ==========================================
+-- 13. STUDENT_SUBJECT (Bridge Table)
+-- ==========================================
+CREATE TABLE student_subject (
+    student_id INT NOT NULL,
+    subject_id INT NOT NULL,
+    PRIMARY KEY (student_id, subject_id),
+    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE,
+    FOREIGN KEY (subject_id) REFERENCES subject(subject_id) ON DELETE CASCADE
+);
+
+-- ==========================================
 -- INDEX CREATION FOR OPTIMIZATION
 -- ==========================================
 -- Index on enrollment_no for fast student lookups

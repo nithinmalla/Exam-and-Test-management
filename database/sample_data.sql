@@ -73,6 +73,25 @@ INSERT INTO result (student_id, exam_id, score, status) VALUES
 (1, 1, 85.00, 'Pass'),
 (2, 1, 38.00, 'Fail');
 
+-- 11. Insert Teacher-Subject mappings
+INSERT INTO teacher_subject (teacher_id, subject_id) VALUES
+(1, 1), -- Alan Turing teaches DBMS
+(2, 2); -- Ada Lovelace teaches Discrete Math
+
+-- 12. Insert Teacher-Student mappings
+INSERT INTO teacher_student (teacher_id, student_id) VALUES
+(1, 1), -- Alan teaches John
+(1, 2), -- Alan teaches Jane
+(2, 2), -- Ada teaches Jane
+(2, 3); -- Ada teaches Alice
+
+-- 13. Insert Student-Subject mappings
+INSERT INTO student_subject (student_id, subject_id) VALUES
+(1, 1), -- John takes DBMS
+(2, 1), -- Jane takes DBMS
+(2, 2), -- Jane takes Discrete Math
+(3, 2); -- Alice takes Discrete Math
+
 -- Re-enable Foreign Key checks
 SET FOREIGN_KEY_CHECKS = 1;
 

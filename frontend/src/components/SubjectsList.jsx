@@ -17,7 +17,7 @@ const SubjectsList = () => {
 
     const fetchSubjects = () => {
         setLoading(true);
-        axios.get('http://localhost:5000/api/subjects')
+        axios.get('http://localhost:5001/api/subjects')
             .then(res => {
                 setSubjects(res.data);
                 setLoading(false);
@@ -60,8 +60,8 @@ const SubjectsList = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const endpoint = editingSubject
-            ? `http://localhost:5000/api/subjects/${editingSubject.subject_id}`
-            : 'http://localhost:5000/api/subjects';
+            ? `http://localhost:5001/api/subjects/${editingSubject.subject_id}`
+            : 'http://localhost:5001/api/subjects';
         const method = editingSubject ? 'put' : 'post';
 
         axios[method](endpoint, formData)
@@ -74,7 +74,7 @@ const SubjectsList = () => {
 
     const handleDelete = (id) => {
         if (window.confirm('Are you sure you want to delete this subject? It cannot be deleted if there are exams assigned to it.')) {
-            axios.delete(`http://localhost:5000/api/subjects/${id}`)
+            axios.delete(`http://localhost:5001/api/subjects/${id}`)
                 .then(res => fetchSubjects())
                 .catch(err => alert('Error deleting subject. It is likely referenced in an existing Exam.'));
         }

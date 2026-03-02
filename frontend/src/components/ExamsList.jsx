@@ -22,7 +22,7 @@ const ExamsList = () => {
 
     const fetchExams = () => {
         setLoading(true);
-        axios.get('http://localhost:5000/api/exams/recent')
+        axios.get('http://localhost:5001/api/exams/recent')
             .then(res => {
                 setExams(res.data);
                 setLoading(false);
@@ -34,8 +34,8 @@ const ExamsList = () => {
     };
 
     const fetchDependencies = () => {
-        axios.get('http://localhost:5000/api/subjects').then(res => setSubjects(res.data));
-        axios.get('http://localhost:5000/api/teachers').then(res => setTeachers(res.data));
+        axios.get('http://localhost:5001/api/subjects').then(res => setSubjects(res.data));
+        axios.get('http://localhost:5001/api/teachers').then(res => setTeachers(res.data));
     };
 
     useEffect(() => {
@@ -63,7 +63,7 @@ const ExamsList = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:5000/api/exams', formData)
+        axios.post('http://localhost:5001/api/exams', formData)
             .then(res => {
                 fetchExams();
                 setIsModalOpen(false);

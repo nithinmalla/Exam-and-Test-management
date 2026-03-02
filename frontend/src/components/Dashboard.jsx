@@ -7,7 +7,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get('http://localhost:5000/api/stats')
+        axios.get('http://localhost:5001/api/stats')
             .then(res => {
                 setStats(res.data);
                 setLoading(false);
@@ -28,22 +28,22 @@ const Dashboard = () => {
 
             <div className="stat-grid">
                 <div className="glass-panel stat-card">
-                    <GraduationCap size={40} color="#6366f1" style={{ marginBottom: '15px' }} />
+                    <GraduationCap size={40} color="var(--primary)" style={{ marginBottom: '15px' }} />
                     <div className="stat-value">{stats.students}</div>
                     <div className="stat-label">Total Students</div>
                 </div>
                 <div className="glass-panel stat-card">
-                    <BookOpen size={40} color="#10b981" style={{ marginBottom: '15px' }} />
+                    <BookOpen size={40} color="var(--success)" style={{ marginBottom: '15px' }} />
                     <div className="stat-value">{stats.subjects}</div>
                     <div className="stat-label">Subjects</div>
                 </div>
                 <div className="glass-panel stat-card">
-                    <ClipboardList size={40} color="#f59e0b" style={{ marginBottom: '15px' }} />
+                    <ClipboardList size={40} color="var(--warning)" style={{ marginBottom: '15px' }} />
                     <div className="stat-value">{stats.exams}</div>
                     <div className="stat-label">Exams Created</div>
                 </div>
                 <div className="glass-panel stat-card">
-                    <Users size={40} color="#ef4444" style={{ marginBottom: '15px' }} />
+                    <Users size={40} color="var(--danger)" style={{ marginBottom: '15px' }} />
                     <div className="stat-value">{stats.teachers}</div>
                     <div className="stat-label">Faculty Members</div>
                 </div>

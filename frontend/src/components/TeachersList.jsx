@@ -19,7 +19,7 @@ const TeachersList = () => {
 
     const fetchTeachers = () => {
         setLoading(true);
-        axios.get('http://localhost:5000/api/teachers')
+        axios.get('http://localhost:5001/api/teachers')
             .then(res => {
                 setTeachers(res.data);
                 setLoading(false);
@@ -65,8 +65,8 @@ const TeachersList = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const endpoint = editingTeacher
-            ? `http://localhost:5000/api/teachers/${editingTeacher.teacher_id}`
-            : 'http://localhost:5000/api/teachers';
+            ? `http://localhost:5001/api/teachers/${editingTeacher.teacher_id}`
+            : 'http://localhost:5001/api/teachers';
         const method = editingTeacher ? 'put' : 'post';
 
         axios[method](endpoint, formData)
@@ -79,7 +79,7 @@ const TeachersList = () => {
 
     const handleDelete = (id) => {
         if (window.confirm('Are you sure you want to delete this teacher? Have they been unassigned from all exams?')) {
-            axios.delete(`http://localhost:5000/api/teachers/${id}`)
+            axios.delete(`http://localhost:5001/api/teachers/${id}`)
                 .then(res => fetchTeachers())
                 .catch(err => alert('Error deleting teacher. They might be referenced in existing exams or subjects.'));
         }
