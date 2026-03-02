@@ -22,9 +22,9 @@ INSERT INTO student (enrollment_no, first_name, last_name, email, phone, dob, ba
 ('CS2020003', 'Alice', 'Johnson', 'alice.johnson@student.edu', '7778889999', '2001-02-10', 2020);
 
 -- 4. Insert Subjects
-INSERT INTO subject (subject_code, subject_name, description, credits) VALUES
-('CS101', 'Introduction to Database Systems', 'Fundamentals of SQL and NoSQL', 4),
-('MA101', 'Discrete Mathematics', 'Logic, set theory, and combinatorics', 3);
+INSERT INTO subject (subject_code, subject_name, description, credits, teacher_id) VALUES
+('CS101', 'Introduction to Database Systems', 'Fundamentals of SQL and NoSQL', 4, 1),
+('MA101', 'Discrete Mathematics', 'Logic, set theory, and combinatorics', 3, 2);
 
 -- 5. Insert Exams
 INSERT INTO exam (subject_id, teacher_id, exam_name, exam_date, duration_minutes, total_marks, pass_percentage, status) VALUES
@@ -73,24 +73,12 @@ INSERT INTO result (student_id, exam_id, score, status) VALUES
 (1, 1, 85.00, 'Pass'),
 (2, 1, 38.00, 'Fail');
 
--- 11. Insert Teacher-Subject mappings
-INSERT INTO teacher_subject (teacher_id, subject_id) VALUES
-(1, 1), -- Alan Turing teaches DBMS
-(2, 2); -- Ada Lovelace teaches Discrete Math
-
--- 12. Insert Teacher-Student mappings
-INSERT INTO teacher_student (teacher_id, student_id) VALUES
-(1, 1), -- Alan teaches John
-(1, 2), -- Alan teaches Jane
-(2, 2), -- Ada teaches Jane
-(2, 3); -- Ada teaches Alice
-
--- 13. Insert Student-Subject mappings
-INSERT INTO student_subject (student_id, subject_id) VALUES
+-- 11. Insert Subject-Student mappings
+INSERT INTO subject_student (subject_id, student_id) VALUES
 (1, 1), -- John takes DBMS
-(2, 1), -- Jane takes DBMS
+(1, 2), -- Jane takes DBMS
 (2, 2), -- Jane takes Discrete Math
-(3, 2); -- Alice takes Discrete Math
+(2, 3); -- Alice takes Discrete Math
 
 -- Re-enable Foreign Key checks
 SET FOREIGN_KEY_CHECKS = 1;

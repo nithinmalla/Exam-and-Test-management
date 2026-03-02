@@ -3,6 +3,7 @@
 -- ==============================================================================
 
 -- Create the database
+DROP DATABASE IF EXISTS exam_management_system;
 CREATE DATABASE IF NOT EXISTS exam_management_system;
 USE exam_management_system;
 
@@ -54,7 +55,9 @@ CREATE TABLE subject (
     subject_code VARCHAR(20) NOT NULL UNIQUE,
     subject_name VARCHAR(100) NOT NULL,
     description TEXT,
-    credits INT DEFAULT 3
+    credits INT DEFAULT 3,
+    teacher_id INT NOT NULL,
+    FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id) ON DELETE RESTRICT
 );
 
 -- ==========================================
@@ -141,37 +144,17 @@ CREATE TABLE result (
     FOREIGN KEY (exam_id) REFERENCES exam(exam_id) ON DELETE CASCADE
 );
 
--- ==========================================
--- 11. TEACHER_SUBJECT (Bridge Table)
--- ==========================================
-CREATE TABLE teacher_subject (
-    teacher_id INT NOT NULL,
-    subject_id INT NOT NULL,
-    PRIMARY KEY (teacher_id, subject_id),
-    FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id) ON DELETE CASCADE,
-    FOREIGN KEY (subject_id) REFERENCES subject(subject_id) ON DELETE CASCADE
-);
+
 
 -- ==========================================
--- 12. TEACHER_STUDENT (Bridge Table)
+-- 11. SUBJECT_STUDENT (Bridge Table)
 -- ==========================================
-CREATE TABLE teacher_student (
-    teacher_id INT NOT NULL,
+CREATE TABLE subject_student (
+    subject_id INT NOT NULL,
     student_id INT NOT NULL,
-    PRIMARY KEY (teacher_id, student_id),
-    FOREIGN KEY (teacher_id) REFERENCES teacher(teacher_id) ON DELETE CASCADE,
+    PRIMARY KEY (subject_id, student_id),
+    FOREIGN KEY (subject_id) REFERENCES subject(subject_id) ON DELETE CASCADE,
     FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE
-);
-
--- ==========================================
--- 13. STUDENT_SUBJECT (Bridge Table)
--- ==========================================
-CREATE TABLE student_subject (
-    student_id INT NOT NULL,
-    subject_id INT NOT NULL,
-    PRIMARY KEY (student_id, subject_id),
-    FOREIGN KEY (student_id) REFERENCES student(student_id) ON DELETE CASCADE,
-    FOREIGN KEY (subject_id) REFERENCES subject(subject_id) ON DELETE CASCADE
 );
 
 -- ==========================================

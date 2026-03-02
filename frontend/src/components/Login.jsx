@@ -46,7 +46,7 @@ const Login = () => {
 
                 <form onSubmit={handleLogin}>
                     <div style={{ marginBottom: '1rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-muted)' }}>Username</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-muted)' }}>First Name (Username)</label>
                         <input
                             type="text"
                             value={username}
@@ -56,7 +56,7 @@ const Login = () => {
                         />
                     </div>
                     <div style={{ marginBottom: '1.5rem' }}>
-                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-muted)' }}>Password</label>
+                        <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '0.875rem', fontWeight: '500', color: 'var(--text-muted)' }}>Last Name (Password)</label>
                         <input
                             type="password"
                             value={password}
@@ -74,9 +74,9 @@ const Login = () => {
 
                 <div style={{ marginTop: '1.5rem', fontSize: '0.75rem', color: 'var(--text-muted)', textAlign: 'center' }}>
                     <p>Demo accounts:</p>
-                    <p>admin / admin123</p>
-                    <p>teacher / teacher123</p>
-                    <p>student / student123</p>
+                    <p>Admin: admin / admin123</p>
+                    <p>Teacher: Alan / Turing</p>
+                    <p>Student: John / Doe</p>
                 </div>
             </div>
         </div>

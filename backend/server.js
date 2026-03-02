@@ -14,7 +14,7 @@ const JWT_SECRET = process.env.JWT_SECRET || 'super_secret_exam_key_123';
 app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
 
 // --- AUTHENTICATION ---
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
   const { username, password } = req.body;
 
   if (username === 'admin' && password === 'admin123') {
@@ -22,17 +22,24 @@ app.post('/api/login', (req, res) => {
     return res.json({ token, role: 'admin' });
   }
 
-  if (username === 'teacher' && password === 'teacher123') {
-    const token = jwt.sign({ role: 'teacher', teacher_id: 1 }, JWT_SECRET, { expiresIn: '1d' });
-    return res.json({ token, role: 'teacher', teacher_id: 1 });
-  }
+  try {
+    const [teachers] = await db.query('SELECT * FROM teacher WHERE first_name = ? AND last_name = ?', [username, password]);
+    if (teachers.length > 0) {
+      const token = jwt.sign({ role: 'teacher', teacher_id: teachers[0].teacher_id }, JWT_SECRET, { expiresIn: '1d' });
+      return res.json({ token, role: 'teacher', teacher_id: teachers[0].teacher_id });
+    }
 
-  if (username === 'student' && password === 'student123') {
-    const token = jwt.sign({ role: 'student', student_id: 1 }, JWT_SECRET, { expiresIn: '1d' });
-    return res.json({ token, role: 'student', student_id: 1 });
-  }
+    const [students] = await db.query('SELECT * FROM student WHERE first_name = ? AND last_name = ?', [username, password]);
+    if (students.length > 0) {
+      const token = jwt.sign({ role: 'student', student_id: students[0].student_id }, JWT_SECRET, { expiresIn: '1d' });
+      return res.json({ token, role: 'student', student_id: students[0].student_id });
+    }
 
-  return res.status(401).json({ error: 'Invalid credentials' });
+    return res.status(401).json({ error: 'Invalid credentials' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Database query failed' });
+  }
 });
 
 // Middleware
@@ -228,14 +235,21 @@ app.get('/api/subjects', authenticateToken, authorizeRoles('admin'), async (req,
 });
 
 app.post('/api/subjects', authenticateToken, authorizeRoles('admin'), async (req, res) => {
-  const { subject_code, subject_name, description, credits } = req.body;
+  const { subject_code, subject_name, description, credits, teacher_id, students } = req.body;
   try {
     const [result] = await db.query(
-      `INSERT INTO subject (subject_code, subject_name, description, credits) 
-       VALUES (?, ?, ?, ?)`,
-      [subject_code, subject_name, description, credits || 3]
+      `INSERT INTO subject (subject_code, subject_name, description, credits, teacher_id) 
+       VALUES (?, ?, ?, ?, ?)`,
+      [subject_code, subject_name, description, credits || 3, teacher_id]
     );
-    res.json({ message: 'Subject added', subject_id: result.insertId });
+    const subjectId = result.insertId;
+
+    if (students && students.length > 0) {
+      const studentValues = students.map(sId => [subjectId, sId]);
+      await db.query(`INSERT INTO subject_student (subject_id, student_id) VALUES ?`, [studentValues]);
+    }
+
+    res.json({ message: 'Subject added', subject_id: subjectId });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Database query failed' });
@@ -274,9 +288,7 @@ app.delete('/api/subjects/:id', authenticateToken, authorizeRoles('admin'), asyn
 app.get('/api/teacher/subjects', authenticateToken, authorizeRoles('teacher'), async (req, res) => {
   try {
     const [subjects] = await db.query(`
-      SELECT s.* FROM subject s
-      JOIN teacher_subject ts ON s.subject_id = ts.subject_id
-      WHERE ts.teacher_id = ?
+      SELECT * FROM subject WHERE teacher_id = ?
     `, [req.user.teacher_id]);
     res.json(subjects);
   } catch (err) { res.status(500).json({ error: 'Database fetch failed' }); }
@@ -285,9 +297,10 @@ app.get('/api/teacher/subjects', authenticateToken, authorizeRoles('teacher'), a
 app.get('/api/teacher/students', authenticateToken, authorizeRoles('teacher'), async (req, res) => {
   try {
     const [students] = await db.query(`
-      SELECT st.* FROM student st
-      JOIN teacher_student ts ON st.student_id = ts.student_id
-      WHERE ts.teacher_id = ?
+      SELECT DISTINCT st.* FROM student st
+      JOIN subject_student ss ON st.student_id = ss.student_id
+      JOIN subject s ON ss.subject_id = s.subject_id
+      WHERE s.teacher_id = ?
     `, [req.user.teacher_id]);
     res.json(students);
   } catch (err) { res.status(500).json({ error: 'Database fetch failed' }); }
@@ -328,9 +341,8 @@ app.get('/api/student/subjects', authenticateToken, authorizeRoles('student'), a
     const [subjects] = await db.query(`
       SELECT s.*, t.first_name as teacher_first_name, t.last_name as teacher_last_name 
       FROM subject s
-      JOIN student_subject ss ON s.subject_id = ss.subject_id
-      JOIN teacher_subject ts ON s.subject_id = ts.subject_id
-      JOIN teacher t ON ts.teacher_id = t.teacher_id
+      JOIN subject_student ss ON s.subject_id = ss.subject_id
+      JOIN teacher t ON s.teacher_id = t.teacher_id
       WHERE ss.student_id = ?
     `, [req.user.student_id]);
     res.json(subjects);
@@ -343,7 +355,7 @@ app.get('/api/student/exams', authenticateToken, authorizeRoles('student'), asyn
       SELECT e.*, s.subject_name, t.first_name as teacher_first_name, t.last_name as teacher_last_name 
       FROM exam e
       JOIN subject s ON e.subject_id = s.subject_id
-      JOIN student_subject ss ON s.subject_id = ss.subject_id
+      JOIN subject_student ss ON s.subject_id = ss.subject_id
       JOIN teacher t ON e.teacher_id = t.teacher_id
       WHERE ss.student_id = ?
       ORDER BY e.exam_date ASC
