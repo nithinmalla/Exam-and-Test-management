@@ -11,6 +11,9 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 import TeacherDashboard from './components/TeacherDashboard';
 import StudentDashboard from './components/StudentDashboard';
+import StudentExams from './components/StudentExams';
+import TakeExam from './components/TakeExam';
+import TeacherExams from './components/TeacherExams';
 
 function App() {
   return (
@@ -38,7 +41,7 @@ function App() {
           </ProtectedRoute>
         }>
           <Route index element={<TeacherDashboard />} />
-          <Route path="exams" element={<div>Teacher Exams</div>} />
+          <Route path="exams" element={<TeacherExams />} />
         </Route>
 
         {/* Student Routes */}
@@ -48,7 +51,8 @@ function App() {
           </ProtectedRoute>
         }>
           <Route index element={<StudentDashboard />} />
-          <Route path="exams" element={<div>Student Exams</div>} />
+          <Route path="exams" element={<StudentExams />} />
+          <Route path="take-exam/:examId" element={<TakeExam />} />
         </Route>
 
         {/* Catch all */}

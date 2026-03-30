@@ -18,9 +18,11 @@ const StudentsList = () => {
         batch_year: new Date().getFullYear()
     });
 
+    const authHeaders = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
+
     const fetchStudents = () => {
         setLoading(true);
-        axios.get('http://localhost:5001/api/students')
+        axios.get('http://localhost:5001/api/students', authHeaders)
             .then(res => {
                 setStudents(res.data);
                 setLoading(false);
@@ -72,7 +74,7 @@ const StudentsList = () => {
             : 'http://localhost:5001/api/students';
         const method = editingStudent ? 'put' : 'post';
 
-        axios[method](endpoint, formData)
+        axios[method](endpoint, formData, authHeaders)
             .then(res => {
                 fetchStudents();
                 handleCloseModal();
@@ -82,7 +84,7 @@ const StudentsList = () => {
 
     const handleDelete = (id) => {
         if (window.confirm('Are you sure you want to delete this student?')) {
-            axios.delete(`http://localhost:5001/api/students/${id}`)
+            axios.delete(`http://localhost:5001/api/students/${id}`, authHeaders)
                 .then(res => fetchStudents())
                 .catch(err => alert('Error deleting student'));
         }
@@ -97,7 +99,7 @@ const StudentsList = () => {
                 </button>
             </div>
 
-            <div className="glass-panel">
+            <div className="card">
                 {loading ? (
                     <div>Loading students...</div>
                 ) : students.length === 0 ? (

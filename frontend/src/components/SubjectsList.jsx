@@ -121,7 +121,7 @@ const SubjectsList = () => {
                 </button>
             </div>
 
-            <div className="glass-panel">
+            <div className="card">
                 {loading ? (
                     <div>Loading subjects...</div>
                 ) : subjects.length === 0 ? (
@@ -199,7 +199,7 @@ const SubjectsList = () => {
                                 </div>
                                 <div className="form-group">
                                     <label>Assign Teacher</label>
-                                    <select className="form-control" name="teacher_id" value={formData.teacher_id} onChange={handleChange} required style={{ background: '#000000', color: 'var(--text-main)' }}>
+                                    <select className="form-control" name="teacher_id" value={formData.teacher_id} onChange={handleChange} required>
                                         <option value="" disabled>Select a teacher</option>
                                         {teachers.map(t => (
                                             <option key={t.teacher_id} value={t.teacher_id}>{t.first_name} {t.last_name}</option>
@@ -211,7 +211,7 @@ const SubjectsList = () => {
                             {!editingSubject && (
                                 <div className="form-group">
                                     <label>Enroll Students</label>
-                                    <div style={{ border: '1px solid var(--primary)', borderRadius: '8px', padding: '10px', maxHeight: '150px', overflowY: 'auto', background: '#000000' }}>
+                                    <div style={{ border: '1px solid var(--border-color)', borderRadius: '12px', padding: '12px', maxHeight: '150px', overflowY: 'auto', background: '#FFFFFF' }}>
                                         {studentsList.map(s => (
                                             <div key={s.student_id} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
                                                 <input

@@ -11,10 +11,11 @@ const TeacherDashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const authHeaders = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
                 const [subRes, stuRes, examRes] = await Promise.all([
-                    axios.get('http://localhost:5001/api/teacher/subjects'),
-                    axios.get('http://localhost:5001/api/teacher/students'),
-                    axios.get('http://localhost:5001/api/teacher/exams')
+                    axios.get('http://localhost:5001/api/teacher/subjects', authHeaders),
+                    axios.get('http://localhost:5001/api/teacher/students', authHeaders),
+                    axios.get('http://localhost:5001/api/teacher/exams', authHeaders)
                 ]);
                 setSubjects(subRes.data);
                 setStudents(stuRes.data);
@@ -34,73 +35,85 @@ const TeacherDashboard = () => {
         <div>
             <h1 style={{ marginBottom: '2rem', color: 'var(--text-main)' }}>Teacher Dashboard</h1>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-                <div style={{ background: 'var(--surface-dark)', padding: '1.5rem', borderRadius: '8px', boxShadow: 'none', border: '1px solid var(--primary)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ background: '#000000', padding: '1rem', borderRadius: '50%' }}><BookOpen color="var(--primary)" size={24} /></div>
-                    <div>
-                        <h3 style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Assigned Subjects</h3>
-                        <p style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.5rem', fontWeight: 'bold' }}>{subjects.length}</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+                <div className="card card-pastel-purple" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '8px' }}>Assigned Subjects</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)' }}>{subjects.length}</div>
+                        </div>
+                        <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '16px', display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                            <BookOpen size={24} color="#8A63D2" />
+                        </div>
                     </div>
                 </div>
 
-                <div style={{ background: 'var(--surface-dark)', padding: '1.5rem', borderRadius: '8px', boxShadow: 'none', border: '1px solid var(--primary)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ background: '#000000', padding: '1rem', borderRadius: '50%' }}><Users color="var(--danger)" size={24} /></div>
-                    <div>
-                        <h3 style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>My Students</h3>
-                        <p style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.5rem', fontWeight: 'bold' }}>{students.length}</p>
+                <div className="card card-pastel-cyan" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '8px' }}>My Students</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)' }}>{students.length}</div>
+                        </div>
+                        <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '16px', display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                            <Users size={24} color="#3498db" />
+                        </div>
                     </div>
                 </div>
 
-                <div style={{ background: 'var(--surface-dark)', padding: '1.5rem', borderRadius: '8px', boxShadow: 'none', border: '1px solid var(--primary)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ background: '#000000', padding: '1rem', borderRadius: '50%' }}><FileText color="var(--warning)" size={24} /></div>
-                    <div>
-                        <h3 style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Exams Scheduled</h3>
-                        <p style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.5rem', fontWeight: 'bold' }}>{exams.length}</p>
+                <div className="card card-pastel-peach" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '8px' }}>Exams Scheduled</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)' }}>{exams.length}</div>
+                        </div>
+                        <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '16px', display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                            <FileText size={24} color="#F37335" />
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
-                <div style={{ background: 'var(--surface-dark)', borderRadius: '8px', boxShadow: 'none', border: '1px solid var(--primary)', padding: '1.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-main)' }}>Assigned Subjects</h2>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '32px' }}>
+                <div className="card">
+                    <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', color: 'var(--text-main)', fontWeight: '700' }}>Assigned Subjects</h2>
+                    <table>
                         <thead>
-                            <tr style={{ borderBottom: '2px solid var(--border-color)', textAlign: 'left' }}>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Code</th>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Name</th>
+                            <tr>
+                                <th>Code</th>
+                                <th>Name</th>
                             </tr>
                         </thead>
                         <tbody>
                             {subjects.map(s => (
-                                <tr key={s.subject_id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                                    <td style={{ padding: '0.75rem 0' }}>{s.subject_code}</td>
-                                    <td style={{ padding: '0.75rem 0' }}>{s.subject_name}</td>
+                                <tr key={s.subject_id}>
+                                    <td>{s.subject_code}</td>
+                                    <td>{s.subject_name}</td>
                                 </tr>
                             ))}
-                            {subjects.length === 0 && <tr><td colSpan="2" style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-muted)' }}>No subjects assigned</td></tr>}
+                            {subjects.length === 0 && <tr><td colSpan="2" style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)' }}>No subjects assigned</td></tr>}
                         </tbody>
                     </table>
                 </div>
 
-                <div style={{ background: 'var(--surface-dark)', borderRadius: '8px', boxShadow: 'none', border: '1px solid var(--primary)', padding: '1.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-main)' }}>Recent Exams</h2>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <div className="card">
+                    <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', color: 'var(--text-main)', fontWeight: '700' }}>Recent Exams</h2>
+                    <table>
                         <thead>
-                            <tr style={{ borderBottom: '2px solid var(--border-color)', textAlign: 'left' }}>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Subject</th>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Exam Name</th>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Date</th>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Exam Name</th>
+                                <th>Date</th>
                             </tr>
                         </thead>
                         <tbody>
                             {exams.map(e => (
-                                <tr key={e.exam_id} style={{ borderBottom: '1px solid var(--border-color)' }}>
-                                    <td style={{ padding: '0.75rem 0' }}>{e.subject_name}</td>
-                                    <td style={{ padding: '0.75rem 0' }}>{e.exam_name}</td>
-                                    <td style={{ padding: '0.75rem 0' }}>{new Date(e.exam_date).toLocaleDateString()}</td>
+                                <tr key={e.exam_id}>
+                                    <td>{e.subject_name}</td>
+                                    <td>{e.exam_name}</td>
+                                    <td>{new Date(e.exam_date).toLocaleDateString()}</td>
                                 </tr>
                             ))}
-                            {exams.length === 0 && <tr><td colSpan="3" style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-muted)' }}>No exams scheduled</td></tr>}
+                            {exams.length === 0 && <tr><td colSpan="3" style={{ padding: '16px', textAlign: 'center', color: 'var(--text-muted)' }}>No exams scheduled</td></tr>}
                         </tbody>
                     </table>
                 </div>

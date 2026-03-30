@@ -10,9 +10,10 @@ const StudentDashboard = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                const authHeaders = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
                 const [subRes, examRes] = await Promise.all([
-                    axios.get('http://localhost:5001/api/student/subjects'),
-                    axios.get('http://localhost:5001/api/student/exams')
+                    axios.get('http://localhost:5001/api/student/subjects', authHeaders),
+                    axios.get('http://localhost:5001/api/student/exams', authHeaders)
                 ]);
                 setSubjects(subRes.data);
                 setExams(examRes.data);
@@ -31,33 +32,41 @@ const StudentDashboard = () => {
         <div>
             <h1 style={{ marginBottom: '2rem', color: 'var(--text-main)' }}>Student Dashboard</h1>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
-                <div style={{ background: 'var(--surface-dark)', padding: '1.5rem', borderRadius: '8px', boxShadow: 'none', border: '1px solid var(--primary)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ background: '#000000', padding: '1rem', borderRadius: '50%' }}><BookOpen color="var(--primary)" size={24} /></div>
-                    <div>
-                        <h3 style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>My Subjects</h3>
-                        <p style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.5rem', fontWeight: 'bold' }}>{subjects.length}</p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px', marginBottom: '32px' }}>
+                <div className="card card-pastel-purple" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '8px' }}>My Subjects</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)' }}>{subjects.length}</div>
+                        </div>
+                        <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '16px', display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                            <BookOpen size={24} color="#8A63D2" />
+                        </div>
                     </div>
                 </div>
 
-                <div style={{ background: 'var(--surface-dark)', padding: '1.5rem', borderRadius: '8px', boxShadow: 'none', border: '1px solid var(--primary)', display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <div style={{ background: '#000000', padding: '1rem', borderRadius: '50%' }}><FileText color="var(--warning)" size={24} /></div>
-                    <div>
-                        <h3 style={{ margin: 0, color: 'var(--text-muted)', fontSize: '0.875rem' }}>Upcoming Exams</h3>
-                        <p style={{ margin: 0, color: 'var(--text-main)', fontSize: '1.5rem', fontWeight: 'bold' }}>{exams.filter(e => e.status === 'scheduled').length}</p>
+                <div className="card card-pastel-peach" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '8px' }}>Upcoming Exams</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)' }}>{exams.filter(e => e.status === 'scheduled').length}</div>
+                        </div>
+                        <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '16px', display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                            <FileText size={24} color="#F37335" />
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '2rem' }}>
-                <div style={{ background: 'var(--surface-dark)', borderRadius: '8px', boxShadow: 'none', border: '1px solid var(--primary)', padding: '1.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-main)' }}>My Subjects & Teachers</h2>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '32px' }}>
+                <div className="card">
+                    <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', color: 'var(--text-main)', fontWeight: '700' }}>My Subjects & Teachers</h2>
+                    <table>
                         <thead>
-                            <tr style={{ borderBottom: '2px solid var(--border-color)', textAlign: 'left' }}>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Code</th>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Subject</th>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Teacher</th>
+                            <tr>
+                                <th>Code</th>
+                                <th>Subject</th>
+                                <th>Teacher</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -73,15 +82,16 @@ const StudentDashboard = () => {
                     </table>
                 </div>
 
-                <div style={{ background: 'var(--surface-dark)', borderRadius: '8px', boxShadow: 'none', border: '1px solid var(--primary)', padding: '1.5rem' }}>
-                    <h2 style={{ fontSize: '1.25rem', marginBottom: '1rem', color: 'var(--text-main)' }}>My Exams</h2>
-                    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                <div className="card">
+                    <h2 style={{ fontSize: '1.25rem', marginBottom: '16px', color: 'var(--text-main)', fontWeight: '700' }}>My Exams</h2>
+                    <table>
                         <thead>
-                            <tr style={{ borderBottom: '2px solid var(--border-color)', textAlign: 'left' }}>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Subject</th>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Exam Name</th>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Date</th>
-                                <th style={{ padding: '0.75rem 0', color: 'var(--text-muted)' }}>Status</th>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Exam Name</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Score</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -91,20 +101,16 @@ const StudentDashboard = () => {
                                     <td style={{ padding: '0.75rem 0' }}>{e.exam_name}</td>
                                     <td style={{ padding: '0.75rem 0' }}>{new Date(e.exam_date).toLocaleString()}</td>
                                     <td style={{ padding: '0.75rem 0' }}>
-                                        <span style={{
-                                            padding: '0.25rem 0.5rem',
-                                            borderRadius: '9999px',
-                                            fontSize: '0.75rem',
-                                            fontWeight: 'bold',
-                                            backgroundColor: '#000000', border: e.status === 'completed' ? '1px solid var(--success)' : '1px solid var(--warning)',
-                                            color: e.status === 'completed' ? 'var(--success)' : 'var(--warning)'
-                                        }}>
+                                        <span className={`badge badge-${e.status.toLowerCase()}`}>
                                             {e.status.toUpperCase()}
                                         </span>
                                     </td>
+                                    <td style={{ padding: '0.75rem 0', fontWeight: 'bold', color: e.result_status === 'Pass' ? 'var(--success)' : (e.result_status === 'Fail' ? 'var(--danger)' : 'var(--text-muted)') }}>
+                                        {e.score !== null && e.score !== undefined ? `${e.score} (${e.result_status})` : '-'}
+                                    </td>
                                 </tr>
                             ))}
-                            {exams.length === 0 && <tr><td colSpan="4" style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-muted)' }}>No exams found</td></tr>}
+                            {exams.length === 0 && <tr><td colSpan="5" style={{ padding: '1rem', textAlign: 'center', color: 'var(--text-muted)' }}>No exams found</td></tr>}
                         </tbody>
                     </table>
                 </div>

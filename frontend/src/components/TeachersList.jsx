@@ -17,9 +17,11 @@ const TeachersList = () => {
         hire_date: ''
     });
 
+    const authHeaders = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
+
     const fetchTeachers = () => {
         setLoading(true);
-        axios.get('http://localhost:5001/api/teachers')
+        axios.get('http://localhost:5001/api/teachers', authHeaders)
             .then(res => {
                 setTeachers(res.data);
                 setLoading(false);
@@ -69,7 +71,7 @@ const TeachersList = () => {
             : 'http://localhost:5001/api/teachers';
         const method = editingTeacher ? 'put' : 'post';
 
-        axios[method](endpoint, formData)
+        axios[method](endpoint, formData, authHeaders)
             .then(res => {
                 fetchTeachers();
                 handleCloseModal();
@@ -79,7 +81,7 @@ const TeachersList = () => {
 
     const handleDelete = (id) => {
         if (window.confirm('Are you sure you want to delete this teacher? Have they been unassigned from all exams?')) {
-            axios.delete(`http://localhost:5001/api/teachers/${id}`)
+            axios.delete(`http://localhost:5001/api/teachers/${id}`, authHeaders)
                 .then(res => fetchTeachers())
                 .catch(err => alert('Error deleting teacher. They might be referenced in existing exams or subjects.'));
         }
@@ -94,7 +96,7 @@ const TeachersList = () => {
                 </button>
             </div>
 
-            <div className="glass-panel">
+            <div className="card">
                 {loading ? (
                     <div>Loading teachers...</div>
                 ) : teachers.length === 0 ? (

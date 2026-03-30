@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useNavigate, Outlet } from 'react-router-dom';
+import { NavLink, useNavigate, Outlet } from 'react-router-dom';
 import { LayoutDashboard, Users, BookOpen, FileText, LogOut } from 'lucide-react';
 
 const Layout = () => {
@@ -12,71 +12,74 @@ const Layout = () => {
         navigate('/login');
     };
 
+    const getNavClass = ({ isActive }) => isActive ? "nav-item active" : "nav-item";
+
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
-            <aside style={{ width: '250px', background: 'var(--surface-dark)', color: 'var(--text-main)', padding: '1rem', display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--border-color)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '2rem', fontSize: '1.25rem', fontWeight: 'bold' }}>
-                    <BookOpen color="var(--primary)" />
-                    ExamManager
+        <div style={{ display: 'flex', height: '100%', width: '100%' }}>
+            <aside style={{ width: '260px', padding: '32px 24px', display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--border-color)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '40px', fontSize: '1.5rem', fontWeight: '800', color: 'var(--text-main)' }}>
+                    <BookOpen color="var(--primary)" size={28} />
+                    Eduhouse
                 </div>
 
-                <div style={{ fontSize: '0.875rem', marginBottom: '1rem', color: 'var(--text-muted)', textTransform: 'uppercase' }}>
-                    {role} Panel
+                <div style={{ fontSize: '0.75rem', marginBottom: '16px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>
+                    Main Menu
                 </div>
 
-                <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', flexGrow: 1 }}>
+                <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px', flexGrow: 1 }}>
                     {role === 'admin' && (
                         <>
-                            <Link to="/admin" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '4px', background: 'var(--primary)' }}>
-                                <LayoutDashboard size={18} /> Dashboard
-                            </Link>
-                            <Link to="/admin/students" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', color: 'var(--text-muted)', textDecoration: 'none' }}>
-                                <Users size={18} /> Students
-                            </Link>
-                            <Link to="/admin/teachers" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', color: 'var(--text-muted)', textDecoration: 'none' }}>
-                                <Users size={18} /> Teachers
-                            </Link>
-                            <Link to="/admin/subjects" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', color: 'var(--text-muted)', textDecoration: 'none' }}>
-                                <BookOpen size={18} /> Subjects
-                            </Link>
-                            <Link to="/admin/exams" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', color: 'var(--text-muted)', textDecoration: 'none' }}>
-                                <FileText size={18} /> Exams
-                            </Link>
+                            <NavLink to="/admin" end className={getNavClass}>
+                                <LayoutDashboard size={20} /> Overview
+                            </NavLink>
+                            <NavLink to="/admin/students" className={getNavClass}>
+                                <Users size={20} /> Students
+                            </NavLink>
+                            <NavLink to="/admin/teachers" className={getNavClass}>
+                                <Users size={20} /> Teachers
+                            </NavLink>
+                            <NavLink to="/admin/subjects" className={getNavClass}>
+                                <BookOpen size={20} /> Subjects
+                            </NavLink>
+                            <NavLink to="/admin/exams" className={getNavClass}>
+                                <FileText size={20} /> Exams
+                            </NavLink>
                         </>
                     )}
 
                     {role === 'teacher' && (
                         <>
-                            <Link to="/teacher" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '4px', background: 'var(--primary)' }}>
-                                <LayoutDashboard size={18} /> Dashboard
-                            </Link>
-                            <Link to="/teacher/exams" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', color: 'var(--text-muted)', textDecoration: 'none' }}>
-                                <FileText size={18} /> Add / View Exams
-                            </Link>
+                            <NavLink to="/teacher" end className={getNavClass}>
+                                <LayoutDashboard size={20} /> Overview
+                            </NavLink>
+                            <NavLink to="/teacher/exams" className={getNavClass}>
+                                <FileText size={20} /> Add / View Exams
+                            </NavLink>
                         </>
                     )}
 
                     {role === 'student' && (
                         <>
-                            <Link to="/student" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', color: 'var(--text-main)', textDecoration: 'none', borderRadius: '4px', background: 'var(--primary)' }}>
-                                <LayoutDashboard size={18} /> Dashboard
-                            </Link>
-                            <Link to="/student/exams" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', color: 'var(--text-muted)', textDecoration: 'none' }}>
-                                <FileText size={18} /> Upcoming Exams
-                            </Link>
+                            <NavLink to="/student" end className={getNavClass}>
+                                <LayoutDashboard size={20} /> Overview
+                            </NavLink>
+                            <NavLink to="/student/exams" className={getNavClass}>
+                                <FileText size={20} /> Upcoming Exams
+                            </NavLink>
                         </>
                     )}
                 </nav>
 
-                <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.75rem', color: 'var(--danger)', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%' }}>
-                    <LogOut size={18} /> Logout
+                <div style={{ fontSize: '0.75rem', marginTop: 'auto', marginBottom: '16px', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '1px', fontWeight: 'bold' }}>
+                    Settings
+                </div>
+                <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px 16px', color: 'var(--text-muted)', background: 'transparent', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%', fontSize: '1rem', fontWeight: '500', borderRadius: '12px', transition: 'all 0.2s ease' }} onMouseOver={(e) => { e.currentTarget.style.color = 'var(--danger)'; e.currentTarget.style.background = '#FEF2F2'; }} onMouseOut={(e) => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.background = 'transparent'; }}>
+                    <LogOut size={20} /> Logout
                 </button>
             </aside>
 
-            <main style={{ flexGrow: 1, backgroundColor: 'var(--bg-dark)', overflowY: 'auto' }}>
-                <div style={{ padding: '2rem' }}>
-                    <Outlet />
-                </div>
+            <main style={{ flexGrow: 1, overflowY: 'auto', padding: '40px 40px 40px 24px' }}>
+                <Outlet />
             </main>
         </div>
     );

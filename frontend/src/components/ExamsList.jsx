@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Calendar, PlusCircle, X } from 'lucide-react';
+import { Calendar, PlusCircle, X, Edit2, Trash2, Eye, HelpCircle } from 'lucide-react';
+import QuestionManager from './QuestionManager';
 
 const ExamsList = () => {
     const [exams, setExams] = useState([]);
@@ -10,6 +11,11 @@ const ExamsList = () => {
     const [subjects, setSubjects] = useState([]);
     const [teachers, setTeachers] = useState([]);
 
+    const [editingExam, setEditingExam] = useState(null);
+    const [viewingExam, setViewingExam] = useState(null);
+    const [examResults, setExamResults] = useState([]);
+    const [managingQuestionsFor, setManagingQuestionsFor] = useState(null);
+
     const [formData, setFormData] = useState({
         subject_id: '',
         teacher_id: '',
@@ -17,12 +23,15 @@ const ExamsList = () => {
         exam_date: '',
         duration_minutes: 60,
         total_marks: 100,
-        pass_percentage: 40
+        pass_percentage: 40,
+        status: 'scheduled'
     });
+
+    const authHeaders = { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } };
 
     const fetchExams = () => {
         setLoading(true);
-        axios.get('http://localhost:5001/api/exams/recent')
+        axios.get('http://localhost:5001/api/exams/recent', authHeaders)
             .then(res => {
                 setExams(res.data);
                 setLoading(false);
@@ -34,8 +43,8 @@ const ExamsList = () => {
     };
 
     const fetchDependencies = () => {
-        axios.get('http://localhost:5001/api/subjects').then(res => setSubjects(res.data));
-        axios.get('http://localhost:5001/api/teachers').then(res => setTeachers(res.data));
+        axios.get('http://localhost:5001/api/subjects', authHeaders).then(res => setSubjects(res.data));
+        axios.get('http://localhost:5001/api/teachers', authHeaders).then(res => setTeachers(res.data));
     };
 
     useEffect(() => {
@@ -43,18 +52,43 @@ const ExamsList = () => {
         fetchDependencies();
     }, []);
 
-    const handleOpenModal = () => {
-        // Reset form
-        setFormData({
-            subject_id: subjects.length > 0 ? subjects[0].subject_id : '',
-            teacher_id: teachers.length > 0 ? teachers[0].teacher_id : '',
-            exam_name: '',
-            exam_date: '',
-            duration_minutes: 60,
-            total_marks: 100,
-            pass_percentage: 40
-        });
+    const handleOpenModal = (exam = null) => {
+        if (exam) {
+            setEditingExam(exam);
+            // Format datetime-local string (YYYY-MM-DDTHH:mm)
+            const dateObj = new Date(exam.exam_date);
+            const formattedDate = new Date(dateObj.getTime() - (dateObj.getTimezoneOffset() * 60000))
+                .toISOString().slice(0, 16);
+
+            setFormData({
+                subject_id: exam.subject_id,
+                teacher_id: exam.teacher_id,
+                exam_name: exam.exam_name,
+                exam_date: formattedDate,
+                duration_minutes: exam.duration_minutes,
+                total_marks: exam.total_marks,
+                pass_percentage: exam.pass_percentage,
+                status: exam.status
+            });
+        } else {
+            setEditingExam(null);
+            setFormData({
+                subject_id: subjects.length > 0 ? subjects[0].subject_id : '',
+                teacher_id: teachers.length > 0 ? teachers[0].teacher_id : '',
+                exam_name: '',
+                exam_date: '',
+                duration_minutes: 60,
+                total_marks: 100,
+                pass_percentage: 40,
+                status: 'scheduled'
+            });
+        }
         setIsModalOpen(true);
+    };
+
+    const handleCloseModal = () => {
+        setIsModalOpen(false);
+        setEditingExam(null);
     };
 
     const handleChange = (e) => {
@@ -63,24 +97,44 @@ const ExamsList = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post('http://localhost:5001/api/exams', formData)
+        const endpoint = editingExam 
+            ? `http://localhost:5001/api/exams/${editingExam.exam_id}` 
+            : 'http://localhost:5001/api/exams';
+        const method = editingExam ? 'put' : 'post';
+
+        axios[method](endpoint, formData, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(res => {
                 fetchExams();
-                setIsModalOpen(false);
+                handleCloseModal();
             })
-            .catch(err => alert('Error scheduling exam. Ensure subject and teacher exist.'));
+            .catch(err => alert('Error saving exam. Ensure subject and teacher exist.'));
+    };
+
+    const handleDelete = (id) => {
+        if (window.confirm('Are you sure you want to delete this exam? All associated results will be lost.')) {
+            axios.delete(`http://localhost:5001/api/exams/${id}`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
+                .then(res => fetchExams())
+                .catch(err => alert('Error deleting exam.'));
+        }
+    };
+
+    const handleViewResults = (exam) => {
+        setViewingExam(exam);
+        axios.get(`http://localhost:5001/api/admin/exams/${exam.exam_id}/results`, { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
+            .then(res => setExamResults(res.data))
+            .catch(err => alert('Failed to fetch results.'));
     };
 
     return (
         <div>
             <div className="page-header">
                 <h1 className="page-title">Recent Exams</h1>
-                <button className="btn-primary" onClick={handleOpenModal}>
+                <button className="btn-primary" onClick={() => handleOpenModal()}>
                     <PlusCircle size={18} /> Schedule Exam
                 </button>
             </div>
 
-            <div className="glass-panel">
+            <div className="card">
                 {loading ? (
                     <div>Loading exams...</div>
                 ) : exams.length === 0 ? (
@@ -93,6 +147,7 @@ const ExamsList = () => {
                                 <th>Subject</th>
                                 <th>Date & Time</th>
                                 <th>Status</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -104,9 +159,31 @@ const ExamsList = () => {
                                         <Calendar size={14} /> {new Date(exam.exam_date).toLocaleString()}
                                     </td>
                                     <td>
-                                        <span className={`badge badge-${exam.status}`}>
-                                            {exam.status.charAt(0).toUpperCase() + exam.status.slice(1)}
+                                        <span className={`badge badge-${exam.status || 'unknown'}`}>
+                                            {exam.status ? exam.status.charAt(0).toUpperCase() + exam.status.slice(1) : 'Unknown'}
                                         </span>
+                                    </td>
+                                    <td>
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            {exam.status === 'scheduled' && (
+                                                <>
+                                                    <button className="btn-icon" onClick={() => handleOpenModal(exam)}>
+                                                        <Edit2 size={16} />
+                                                    </button>
+                                                    <button className="btn-icon" style={{ color: 'var(--primary)' }} onClick={() => setManagingQuestionsFor(exam)} title="Manage Questions">
+                                                        <HelpCircle size={16} />
+                                                    </button>
+                                                    <button className="btn-icon danger" onClick={() => handleDelete(exam.exam_id)}>
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </>
+                                            )}
+                                            {exam.status === 'completed' && (
+                                                <button className="btn-icon" onClick={() => handleViewResults(exam)} title="View Results">
+                                                    <Eye size={16} />
+                                                </button>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -116,11 +193,11 @@ const ExamsList = () => {
             </div>
 
             {isModalOpen && (
-                <div className="modal-overlay" onClick={() => setIsModalOpen(false)}>
+                <div className="modal-overlay" onClick={handleCloseModal}>
                     <div className="modal-content" onClick={e => e.stopPropagation()}>
                         <div className="modal-header">
-                            <h2 className="modal-title">Schedule New Exam</h2>
-                            <button className="btn-icon" onClick={() => setIsModalOpen(false)}>
+                            <h2 className="modal-title">{editingExam ? 'Edit Exam' : 'Schedule New Exam'}</h2>
+                            <button className="btn-icon" onClick={handleCloseModal}>
                                 <X size={20} />
                             </button>
                         </div>
@@ -173,12 +250,74 @@ const ExamsList = () => {
                             </div>
 
                             <div className="modal-actions">
-                                <button type="button" className="btn-secondary" onClick={() => setIsModalOpen(false)}>Cancel</button>
-                                <button type="submit" className="btn-primary">Schedule Exam</button>
+                                <button type="button" className="btn-secondary" onClick={handleCloseModal}>Cancel</button>
+                                <button type="submit" className="btn-primary">{editingExam ? 'Update Exam' : 'Schedule Exam'}</button>
                             </div>
                         </form>
                     </div>
                 </div>
+            )}
+
+            {viewingExam && (
+                <div className="modal-overlay" onClick={() => setViewingExam(null)}>
+                    <div className="modal-content" onClick={e => e.stopPropagation()} style={{ maxWidth: '700px' }}>
+                        <div className="modal-header">
+                            <div>
+                                <h2 className="modal-title">{viewingExam.exam_name} Results</h2>
+                                <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem', marginTop: '4px' }}>{viewingExam.subject_name} • {new Date(viewingExam.exam_date).toLocaleDateString()}</p>
+                            </div>
+                            <button className="btn-icon" onClick={() => setViewingExam(null)}>
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div style={{ marginTop: '20px', maxHeight: '400px', overflowY: 'auto' }}>
+                            {examResults.length === 0 ? (
+                                <p style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '20px' }}>No student results found for this exam.</p>
+                            ) : (
+                                <table style={{ width: '100%' }}>
+                                    <thead style={{ position: 'sticky', top: 0, background: '#FFF' }}>
+                                        <tr>
+                                            <th>Roll No</th>
+                                            <th>Student Name</th>
+                                            <th>Score</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {examResults.map(res => (
+                                            <tr key={res.student_id}>
+                                                <td>{res.enrollment_no}</td>
+                                                <td>{res.first_name} {res.last_name}</td>
+                                                <td style={{ fontWeight: 'bold' }}>{res.score !== null ? res.score : '-'}</td>
+                                                <td>
+                                                    {res.result_status ? (
+                                                        <span style={{
+                                                            color: res.result_status === 'Pass' ? 'var(--success)' : 'var(--danger)',
+                                                            fontWeight: 'bold', fontSize: '0.875rem'
+                                                        }}>
+                                                            {res.result_status.toUpperCase()}
+                                                        </span>
+                                                    ) : (
+                                                        <span style={{ color: 'var(--text-muted)' }}>Pending</span>
+                                                    )}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {managingQuestionsFor && (
+                <QuestionManager 
+                    subjectId={managingQuestionsFor.subject_id} 
+                    examId={managingQuestionsFor.exam_id} 
+                    onClose={() => setManagingQuestionsFor(null)} 
+                />
             )}
         </div>
     );

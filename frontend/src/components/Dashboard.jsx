@@ -7,7 +7,7 @@ const Dashboard = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        axios.get('http://localhost:5001/api/stats')
+        axios.get('http://localhost:5001/api/stats', { headers: { Authorization: `Bearer ${localStorage.getItem('token')}` } })
             .then(res => {
                 setStats(res.data);
                 setLoading(false);
@@ -26,26 +26,57 @@ const Dashboard = () => {
                 <h1 className="page-title">Overview Dashboard</h1>
             </div>
 
-            <div className="stat-grid">
-                <div className="glass-panel stat-card">
-                    <GraduationCap size={40} color="var(--primary)" style={{ marginBottom: '15px' }} />
-                    <div className="stat-value">{stats.students}</div>
-                    <div className="stat-label">Total Students</div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '24px', marginTop: '30px' }}>
+                {/* Students Card - Purple */}
+                <div className="card card-pastel-purple" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '8px' }}>Total Students</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)' }}>{stats.students}</div>
+                        </div>
+                        <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '16px', display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                            <GraduationCap size={24} color="#8A63D2" />
+                        </div>
+                    </div>
                 </div>
-                <div className="glass-panel stat-card">
-                    <BookOpen size={40} color="var(--success)" style={{ marginBottom: '15px' }} />
-                    <div className="stat-value">{stats.subjects}</div>
-                    <div className="stat-label">Subjects</div>
+
+                {/* Subjects Card - Peach */}
+                <div className="card card-pastel-peach" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '8px' }}>Subjects</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)' }}>{stats.subjects}</div>
+                        </div>
+                        <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '16px', display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                            <BookOpen size={24} color="#F37335" />
+                        </div>
+                    </div>
                 </div>
-                <div className="glass-panel stat-card">
-                    <ClipboardList size={40} color="var(--warning)" style={{ marginBottom: '15px' }} />
-                    <div className="stat-value">{stats.exams}</div>
-                    <div className="stat-label">Exams Created</div>
+
+                {/* Exams Card - Cyan */}
+                <div className="card card-pastel-cyan" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '8px' }}>Exams Created</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)' }}>{stats.exams}</div>
+                        </div>
+                        <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '16px', display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                            <ClipboardList size={24} color="#3498db" />
+                        </div>
+                    </div>
                 </div>
-                <div className="glass-panel stat-card">
-                    <Users size={40} color="var(--danger)" style={{ marginBottom: '15px' }} />
-                    <div className="stat-value">{stats.teachers}</div>
-                    <div className="stat-label">Faculty Members</div>
+
+                {/* Teachers Card - Green */}
+                <div className="card card-pastel-green" style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                        <div>
+                            <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)', fontWeight: '600', marginBottom: '8px' }}>Faculty Members</div>
+                            <div style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--text-main)' }}>{stats.teachers}</div>
+                        </div>
+                        <div style={{ background: '#FFFFFF', padding: '12px', borderRadius: '16px', display: 'flex', boxShadow: '0 4px 12px rgba(0,0,0,0.02)' }}>
+                            <Users size={24} color="#2ecc71" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

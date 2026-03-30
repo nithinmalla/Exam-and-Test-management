@@ -34,8 +34,8 @@ const Login = () => {
     };
 
     return (
-        <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-dark)' }}>
-            <div style={{ background: 'var(--surface-dark)', padding: '2rem', borderRadius: '8px', border: '2px solid var(--primary)', width: '100%', maxWidth: '400px' }}>
+        <div style={{ display: 'flex', height: '100vh', alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-canvas)' }}>
+            <div className="card" style={{ padding: '40px', width: '100%', maxWidth: '420px', border: 'none', boxShadow: '0 20px 40px rgba(0,0,0,0.08)' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
                     <BookOpen size={48} color="var(--primary)" />
                     <h2 style={{ marginTop: '1rem', color: 'var(--text-main)' }}>Exam Management</h2>
